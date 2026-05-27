@@ -1,0 +1,103 @@
+# ══════════════════════════════════════════════
+# MAGEED GROUP — Production .gitignore
+# Comprehensive ignore rules for Node.js + React + Prisma
+# ══════════════════════════════════════════════
+
+# ── Dependencies ──
+node_modules/
+.pnp
+.pnp.js
+.yarn/
+
+# ── Environment Files (NEVER commit real secrets) ──
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+.env.test.local
+.env.production
+.env.production.local
+.env.staging
+!.env.example
+!backend/.env.example
+!frontend/.env.example
+
+# ── Build Output ──
+frontend/dist/
+frontend/build/
+backend/dist/
+*.tsbuildinfo
+
+# ── Logs ──
+logs/
+backend/logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# ── Uploads & Temp Files ──
+backend/uploads/*.xlsx
+backend/uploads/*.xls
+backend/uploads/*.tmp
+backend/uploads/*.pdf
+backend/test-invoice.pdf
+!backend/uploads/.gitkeep
+
+# ── Backups (large data dumps) ──
+backend/backups/
+!backend/backups/.gitkeep
+
+# ── Prisma ──
+backend/prisma/migrations/
+
+# ── IDE & Editors ──
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-workspace
+*.sublime-project
+*.code-workspace
+.project
+.classpath
+.settings/
+
+# ── OS Files ──
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+$RECYCLE.BIN/
+
+# ── Vercel ──
+.vercel/
+
+# ── Railway ──
+.railway/
+
+# ── Testing ──
+coverage/
+.nyc_output/
+
+# ── Misc ──
+*.pid
+*.seed
+*.pid.lock
+*.tgz
+.eslintcache
+.stylelintcache
+.cache/
+.temp/
+.tmp/
+
+# ── Generated Reports (keep in repo for reference) ──
+# FINAL_SYSTEM_AUDIT_REPORT.md — kept
+# CONTINUATION_PROGRESS_REPORT.md — kept

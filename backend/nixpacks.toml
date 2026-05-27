@@ -1,0 +1,20 @@
+# Nixpacks configuration for Railway
+# Installs Chromium for Puppeteer PDF generation
+
+[phases.setup]
+nixPkgs = ["chromium"]
+
+[phases.install]
+cmds = ["npm ci"]
+
+[phases.build]
+cmds = ["npx prisma generate"]
+
+[start]
+cmd = "npm start"
+
+[variables]
+PUPPETEER_SKIP_CHROMIUM_DOWNLOAD = "true"
+# Use `which chromium` to find the correct path dynamically at build time
+# The Nix profile symlink resolves the hash-based store path automatically
+PUPPETEER_EXECUTABLE_PATH = "chromium"

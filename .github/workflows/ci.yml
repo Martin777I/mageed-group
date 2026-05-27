@@ -1,0 +1,149 @@
+# ══════════════════════════════════════════════
+# MAGEED GROUP — CI/CD Pipeline
+# Runs on every push and pull request to main
+# ══════════════════════════════════════════════
+
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+
+jobs:
+  # ── Backend Checks ──
+  backend:
+    name: Backend Build & Validate
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: Validate Prisma schema
+        working-directory: backend
+        run: npx prisma validate
+
+      - name: Generate Prisma client
+        working-directory: backend
+        run: npx prisma generate
+
+      - name: Check for syntax errors (dry-run)
+        working-directory: backend
+        run: node -e "
+          const modules = [
+            './src/config/config',
+            './src/config/prisma',
+            './src/config/logger',
+            './src/middleware/auth',
+            './src/middleware/security',
+            './src/middleware/errorHandler',
+            './src/middleware/requestLogger',
+            './src/middleware/upload',
+            './src/services/cloudinaryService',
+            './src/utils/auditService',
+            './src/utils/customerService',
+            './src/utils/returnService',
+            './src/utils/inventoryService',
+            './src/utils/importService',
+            './src/utils/validators',
+            './src/utils/excelParser',
+            './src/utils/companyNormalizer',
+            './src/utils/backup',
+            './src/controllers/authController',
+            './src/controllers/productController',
+            './src/controllers/orderController',
+            './src/controllers/companyController',
+            './src/controllers/customerController',
+            './src/controllers/returnController',
+            './src/controllers/healthController',
+            './src/routes/auth',
+            './src/routes/products',
+            './src/routes/orders',
+            './src/routes/companies',
+            './src/routes/customers',
+            './src/routes/returns',
+            './src/routes/health',
+            './src/routes/alerts',
+          ];
+          let ok = 0;
+          for (const m of modules) {
+            try { require(m); ok++; } catch(e) { console.error('FAIL:', m, e.message); process.exit(1); }
+          }
+          console.log(ok + '/' + modules.length + ' modules loaded successfully');
+          "
+        env:
+          DATABASE_URL: "mysql://test:test@localhost:3306/test"
+          JWT_SECRET: "ci-test-secret-not-for-production-use-only"
+
+  # ── Frontend Checks ──
+  frontend:
+    name: Frontend Build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Build production bundle
+        working-directory: frontend
+        run: npm run build
+        env:
+          VITE_API_URL: "https://api.example.com/api"
+          VITE_APP_NAME: "MAGEED GROUP"
+
+      - name: Verify build output
+        working-directory: frontend
+        run: |
+          test -f dist/index.html && echo "✅ index.html exists" || exit 1
+          test -d dist/assets && echo "✅ assets directory exists" || exit 1
+          echo "✅ Frontend build verified"
+
+  # ── Security Check ──
+  security:
+    name: Security Scan
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Scan for secrets
+        run: |
+          echo "Scanning for hardcoded secrets..."
+          ! grep -rn "supersecretkey\|sk_live_\|pk_live_\|AKIA[A-Z0-9]" \
+            --include="*.js" --include="*.ts" --include="*.json" \
+            --exclude-dir=node_modules \
+            . && echo "✅ No hardcoded secrets found" || { echo "❌ Secrets detected!"; exit 1; }
+
+      - name: Check .env files not committed
+        run: |
+          # Ensure no .env files (except .example) are tracked
+          if git ls-files --error-unmatch .env backend/.env frontend/.env 2>/dev/null; then
+            echo "❌ .env file is tracked in git!"
+            exit 1
+          fi
+          echo "✅ No .env files tracked"

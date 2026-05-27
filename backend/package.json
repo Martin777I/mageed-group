@@ -1,0 +1,49 @@
+{
+  "name": "mageed-group-backend",
+  "version": "2.1.0",
+  "private": true,
+  "description": "MAGEED GROUP — ERP Backend API (Express + Prisma + MySQL)",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "seed": "node src/utils/seed.js",
+    "lint": "echo 'No linter configured — add eslint for production' && exit 0",
+    "backup:export": "node src/utils/backup.js export",
+    "backup:restore": "node src/utils/backup.js restore",
+    "backup:list": "node src/utils/backup.js list",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio",
+    "prisma:migrate": "prisma migrate dev",
+    "prisma:reset": "prisma db push --force-reset",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "arabic-reshaper": "^1.1.0",
+    "bcryptjs": "^2.4.3",
+    "bidi-js": "^1.0.3",
+    "cloudinary": "^2.10.0",
+    "compression": "^1.8.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.1",
+    "express-rate-limit": "^7.5.1",
+    "express-validator": "^7.2.0",
+    "helmet": "^8.2.0",
+    "jsonwebtoken": "^9.0.2",
+    "multer": "^1.4.5-lts.1",
+    "pdfkit": "^0.15.1",
+    "puppeteer": "^24.43.0",
+    "winston": "^3.19.0",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.7",
+    "prisma": "^5.22.0"
+  }
+}

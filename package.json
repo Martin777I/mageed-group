@@ -1,0 +1,24 @@
+{
+  "name": "mageed-group",
+  "version": "2.1.0",
+  "private": true,
+  "description": "MAGEED GROUP — Motorcycle Spare Parts ERP System. Full-stack inventory, orders, returns, analytics, and customer management.",
+  "author": "MAGEED GROUP",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": ""
+  },
+  "scripts": {
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "install:all": "cd backend && npm install && cd ../frontend && npm install",
+    "build:frontend": "cd frontend && npm run build",
+    "seed": "cd backend && npm run seed",
+    "lint": "cd backend && npm run lint",
+    "backup": "cd backend && npm run backup:export"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

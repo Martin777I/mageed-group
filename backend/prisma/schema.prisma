@@ -1,0 +1,193 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model Admin {
+  id         Int         @id @default(autoincrement())
+  name       String
+  email      String      @unique
+  password   String
+  createdAt  DateTime    @default(now()) @map("created_at")
+  updatedAt  DateTime    @updatedAt @map("updated_at")
+  importLogs ImportLog[]
+
+  @@map("admins")
+}
+
+model Company {
+  id             Int       @id @default(autoincrement())
+  name           String
+  normalizedName String    @unique @map("normalized_name")
+  logo           String?
+  logoPublicId   String?   @map("logo_public_id")
+  color          String    @default("#3b82f6")
+  isActive       Boolean   @default(true) @map("is_active")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+  products       Product[]
+
+  @@index([normalizedName])
+  @@index([isActive])
+  @@map("companies")
+}
+
+model Customer {
+  id           Int      @id @default(autoincrement())
+  customerCode String   @unique @map("customer_code")
+  name         String
+  phone        String   @unique
+  address      String?
+  notes        String?  @db.Text
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  orders       Order[]
+  returns      Return[]
+
+  @@index([phone])
+  @@index([customerCode])
+  @@index([name])
+  @@map("customers")
+}
+
+model Product {
+  id          Int          @id @default(autoincrement())
+  code        String       @unique
+  name        String
+  price       Float
+  category    String?
+  stock       Int          @default(0)
+  companyId   Int?         @map("company_id")
+  company     Company?     @relation(fields: [companyId], references: [id])
+  isActive    Boolean      @default(true) @map("is_active")
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  orderItems  OrderItem[]
+  returnItems ReturnItem[]
+
+  @@index([companyId])
+  @@index([code])
+  @@index([category])
+  @@index([stock])
+  @@index([isActive, stock])
+  @@index([isActive, createdAt])
+  @@map("products")
+}
+
+model Order {
+  id            Int         @id @default(autoincrement())
+  orderNumber   String      @unique @map("order_number")
+  customerId    Int?        @map("customer_id")
+  customer      Customer?   @relation(fields: [customerId], references: [id])
+  customerName  String      @map("customer_name")
+  customerPhone String      @map("customer_phone")
+  status        String      @default("pending")
+  notes         String?     @db.Text
+  totalAmount   Float       @default(0) @map("total_amount")
+  stockDeducted Boolean     @default(false) @map("stock_deducted")
+  acceptedAt    DateTime?   @map("accepted_at")
+  items         OrderItem[]
+  returns       Return[]
+  createdAt     DateTime    @default(now()) @map("created_at")
+  updatedAt     DateTime    @updatedAt @map("updated_at")
+
+  @@index([customerId])
+  @@index([status])
+  @@index([createdAt])
+  @@index([status, createdAt])
+  @@map("orders")
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  orderId     Int      @map("order_id")
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  productId   Int      @map("product_id")
+  product     Product  @relation(fields: [productId], references: [id])
+  productCode String   @map("product_code")
+  productName String   @map("product_name")
+  price       Float
+  quantity    Int
+  total       Float
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  @@index([orderId])
+  @@index([productId])
+  @@index([orderId, productId])
+  @@map("order_items")
+}
+
+model Return {
+  id           Int          @id @default(autoincrement())
+  returnNumber String       @unique @map("return_number")
+  customerId   Int          @map("customer_id")
+  customer     Customer     @relation(fields: [customerId], references: [id])
+  orderId      Int          @map("order_id")
+  order        Order        @relation(fields: [orderId], references: [id])
+  totalAmount  Float        @default(0) @map("total_amount")
+  notes        String?      @db.Text
+  items        ReturnItem[]
+  createdAt    DateTime     @default(now()) @map("created_at")
+
+  @@index([customerId])
+  @@index([orderId])
+  @@index([createdAt])
+  @@map("returns")
+}
+
+model ReturnItem {
+  id        Int      @id @default(autoincrement())
+  returnId  Int      @map("return_id")
+  return    Return   @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  productId Int      @map("product_id")
+  product   Product  @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  total     Float
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([returnId])
+  @@index([productId])
+  @@map("return_items")
+}
+
+model ImportLog {
+  id           Int      @id @default(autoincrement())
+  adminId      Int      @map("admin_id")
+  admin        Admin    @relation(fields: [adminId], references: [id])
+  fileName     String   @map("file_name")
+  mode         String
+  totalRows    Int      @default(0) @map("total_rows")
+  createdCount Int      @default(0) @map("created_count")
+  updatedCount Int      @default(0) @map("updated_count")
+  skippedCount Int      @default(0) @map("skipped_count")
+  errorsCount  Int      @default(0) @map("errors_count")
+  details      String?  @db.LongText
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@index([adminId])
+  @@index([createdAt])
+  @@map("import_logs")
+}
+
+model AuditLog {
+  id        Int      @id @default(autoincrement())
+  action    String
+  entity    String
+  entityId  Int?     @map("entity_id")
+  adminId   Int?     @map("admin_id")
+  details   String?  @db.Text
+  ip        String?
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([action])
+  @@index([entity, entityId])
+  @@index([adminId])
+  @@index([createdAt])
+  @@map("audit_logs")
+}
