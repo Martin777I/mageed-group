@@ -102,11 +102,9 @@ export default function CustomerOrder() {
       <header className="relative overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-br from-brand-600/20 to-transparent" />
         <div className="relative max-w-2xl mx-auto px-4 pt-8 pb-6 text-center">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-brand-500/30">
-            M
-          </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">مجموعة ماجد</h1>
-          <p className="text-brand-400 text-sm">قطع غيار الموتوسيكلات والتوك توك</p>
+          <img src="/logo.png" alt="ماجد جروب" className="w-28 h-28 mx-auto mb-4 object-contain drop-shadow-2xl" />
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">ماجد جروب</h1>
+          <p className="text-brand-400 text-sm">لتجارة وتوزيع قطع غيار الموتوسيكلات والتروسيكلات</p>
         </div>
       </header>
 

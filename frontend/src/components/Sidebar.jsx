@@ -42,9 +42,9 @@ export default function Sidebar() {
       {/* Logo */}
       <div className="p-6 border-b border-brand-800/50">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white font-bold text-lg shadow-lg shadow-brand-500/30">M</div>
+          <img src="/logo.png" alt="ماجد جروب" className="w-12 h-12 object-contain" />
           <div>
-            <h1 className="text-lg font-bold text-white">مجموعة ماجد</h1>
+            <h1 className="text-lg font-bold text-white">ماجد جروب</h1>
             <p className="text-xs text-brand-400">قطع غيار الموتوسيكلات</p>
           </div>
         </div>

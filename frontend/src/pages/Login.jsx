@@ -31,11 +31,9 @@ export default function Login() {
     <div className="min-h-screen bg-gradient-to-b from-brand-900 to-[#0a0f1e] flex items-center justify-center p-4">
       <div className="glass rounded-2xl p-8 max-w-md w-full animate-fade-in">
         <div className="text-center mb-8">
-          <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-brand-500/30">
-            M
-          </div>
+          <img src="/logo.png" alt="ماجد جروب" className="w-24 h-24 mx-auto mb-4 object-contain drop-shadow-2xl" />
           <h1 className="text-2xl font-bold text-white">لوحة الإدارة</h1>
-          <p className="text-gray-400 text-sm mt-1">مجموعة ماجد - قطع الغيار</p>
+          <p className="text-gray-400 text-sm mt-1">ماجد جروب - قطع الغيار</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">
