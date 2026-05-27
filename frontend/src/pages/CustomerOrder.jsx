@@ -1,9 +1,7 @@
 import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import api from '../api/axios';
 import toast from 'react-hot-toast';
-
-const apiBase = '/api';
 
 export default function CustomerOrder() {
   const navigate = useNavigate();
@@ -24,7 +22,7 @@ export default function CustomerOrder() {
     setLookupLoading(true);
     setLookupResult(null);
     try {
-      const res = await axios.get(`${apiBase}/products/code/${code}`);
+      const res = await api.get(`/products/code/${code}`);
       setLookupResult(res.data);
     } catch {
       setLookupResult(null);
@@ -85,7 +83,7 @@ export default function CustomerOrder() {
     if (!validate()) return;
     setSubmitting(true);
     try {
-      const res = await axios.post(`${apiBase}/orders`, {
+      const res = await api.post(`/orders`, {
         customerName: customerName.trim(),
         customerPhone: customerPhone.trim(),
         items: cart.map((c) => ({ code: c.code, quantity: c.quantity })),
