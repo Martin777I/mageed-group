@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 import { formatCurrency, formatDate, statusMap } from '../utils/helpers';
+import { openInvoice } from '../utils/invoiceGenerator';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts';
 
@@ -98,12 +99,16 @@ export default function OrderDetail() {
     } finally { setSaving(false); }
   };
 
-  const downloadPdf = async () => {
+  const downloadPdf = () => {
     try {
-      const res = await api.get(`/orders/${id}/pdf`, { responseType: 'blob' });
-      const url = URL.createObjectURL(new Blob([res.data]));
-      const a = document.createElement('a'); a.href = url; a.download = `invoice-${order.orderNumber}.pdf`; a.click(); URL.revokeObjectURL(url);
-    } catch { toast.error('خطأ في تحميل الفاتورة'); }
+      openInvoice(order);
+    } catch (err) {
+      if (err.message === 'popup_blocked') {
+        toast.error('يرجى السماح بالنوافذ المنبثقة لعرض الفاتورة');
+      } else {
+        toast.error('خطأ في تحميل الفاتورة');
+      }
+    }
   };
 
   if (loading) return <LoadingSpinner text="جاري تحميل الطلب..." />;
