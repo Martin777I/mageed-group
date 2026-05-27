@@ -25,15 +25,24 @@ let browser = null;
 
 async function getBrowser() {
   if (!browser || !browser.isConnected()) {
-    browser = await puppeteer.launch({
-      headless: 'new',
+    const launchOptions = {
+      headless: true,
       args: [
         '--no-sandbox',
         '--disable-setuid-sandbox',
         '--disable-dev-shm-usage',
         '--disable-gpu',
+        '--font-render-hinting=none',
       ],
-    });
+    };
+
+    // Use system Chromium if PUPPETEER_EXECUTABLE_PATH is set (Railway/Docker)
+    if (process.env.PUPPETEER_EXECUTABLE_PATH) {
+      launchOptions.executablePath = process.env.PUPPETEER_EXECUTABLE_PATH;
+      logger.info(`[PDF] Using Chromium at: ${process.env.PUPPETEER_EXECUTABLE_PATH}`);
+    }
+
+    browser = await puppeteer.launch(launchOptions);
   }
   return browser;
 }
@@ -447,12 +456,19 @@ async function generateInvoicePdf(order, stream) {
     page = await instance.newPage();
 
     const html = buildInvoiceHtml(order);
-    await page.setContent(html, { waitUntil: 'networkidle0' });
+
+    // Use 'domcontentloaded' instead of 'networkidle0' to avoid timeout
+    // when Google Fonts CDN is slow/blocked in the deployment environment
+    await page.setContent(html, {
+      waitUntil: fontBase64 ? 'domcontentloaded' : 'networkidle0',
+      timeout: 15000,
+    });
 
     const pdfBuffer = await page.pdf({
       format: 'A4',
       printBackground: true,
       margin: { top: '0', right: '0', bottom: '0', left: '0' },
+      timeout: 15000,
     });
 
     stream.end(pdfBuffer);
