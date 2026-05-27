@@ -1,12 +1,12 @@
 <div align="center">
 
-# 🏍️ MAGEED GROUP
+# 🏍️ MAGED GROUP
 
 ### Motorcycle Spare Parts ERP System
 
 **Full-stack inventory management, order processing, returns, analytics, and customer tracking.**
 
-[![CI](https://github.com/YOUR_USERNAME/mageed-group/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/mageed-group/actions)
+[![CI](https://github.com/YOUR_USERNAME/MAGED-group/actions/workflows/ci.yml/badge.svg)](https://github.com/YOUR_USERNAME/MAGED-group/actions)
 ![Node](https://img.shields.io/badge/Node.js-≥18-339933?logo=node.js&logoColor=white)
 ![React](https://img.shields.io/badge/React-18-61DAFB?logo=react&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-8-4479A1?logo=mysql&logoColor=white)
@@ -18,7 +18,7 @@
 
 ## 📋 Overview
 
-MAGEED GROUP is a production-ready ERP system designed for motorcycle spare parts businesses. Built with a modern Arabic-first RTL interface, it provides complete business management from inventory tracking to customer analytics.
+MAGED GROUP is a production-ready ERP system designed for motorcycle spare parts businesses. Built with a modern Arabic-first RTL interface, it provides complete business management from inventory tracking to customer analytics.
 
 ## ✨ Features
 
@@ -94,7 +94,7 @@ MAGEED GROUP is a production-ready ERP system designed for motorcycle spare part
 ## 📂 Project Structure
 
 ```
-mageed-group/
+MAGED-group/
 ├── .github/workflows/     # CI/CD pipelines
 │   └── ci.yml             # Build + security checks
 ├── backend/
@@ -141,8 +141,8 @@ mageed-group/
 ### 1. Clone & Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/mageed-group.git
-cd mageed-group
+git clone https://github.com/YOUR_USERNAME/MAGED-group.git
+cd MAGED-group
 
 # Install all dependencies
 cd backend && npm install
@@ -184,7 +184,7 @@ cd frontend && npm run dev
 | `http://localhost:5173/order/:customerId` | Customer order form |
 | `http://localhost:5000/api/health` | Backend health check |
 
-**Default Admin:** `admin@mageed.com` / `admin123`
+**Default Admin:** `admin@MAGED.com` / `admin123`
 
 > ⚠️ **Change the default password immediately after first login.**
 
@@ -224,7 +224,7 @@ See [docs/DEPLOYMENT.md](docs/DEPLOYMENT.md) for the complete step-by-step guide
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
 | `VITE_API_URL` | Prod | `/api` | Backend API URL |
-| `VITE_APP_NAME` | No | `MAGEED GROUP` | App display name |
+| `VITE_APP_NAME` | No | `MAGED GROUP` | App display name |
 
 ---
 
@@ -313,4 +313,4 @@ AuditLog     → Administrative action tracking
 
 ## 📄 License
 
-Private — All rights reserved. MAGEED GROUP © 2024-2026.
+Private — All rights reserved. MAGED GROUP © 2024-2026.

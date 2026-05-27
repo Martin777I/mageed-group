@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Cloudinary Service
+ * MAGED GROUP — Cloudinary Service
  * Reusable service for image upload, delete, and URL optimization.
  */
 

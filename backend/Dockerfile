@@ -1,5 +1,5 @@
 # ══════════════════════════════════════════════
-# MAGEED GROUP — Production Dockerfile
+# MAGED GROUP — Production Dockerfile
 # For Railway deployment with Puppeteer support
 # ══════════════════════════════════════════════
 

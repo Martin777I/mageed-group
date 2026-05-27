@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Centralized Configuration
+ * MAGED GROUP — Centralized Configuration
  * Validates and exports all environment variables at startup.
  * Fails fast if required variables are missing in production.
  */
@@ -86,7 +86,7 @@ const config = {
     cloudName: process.env.CLOUDINARY_CLOUD_NAME || '',
     apiKey: process.env.CLOUDINARY_API_KEY || '',
     apiSecret: process.env.CLOUDINARY_API_SECRET || '',
-    folder: process.env.CLOUDINARY_FOLDER || 'mageed-group',
+    folder: process.env.CLOUDINARY_FOLDER || 'MAGED-group',
     get isConfigured() {
       return !!(this.cloudName && this.apiKey && this.apiSecret);
     },

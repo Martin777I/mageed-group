@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Arabic Invoice PDF Generator
+ * MAGED GROUP — Arabic Invoice PDF Generator
  *
  * Uses Puppeteer (headless Chrome) to render an HTML invoice template to PDF.
  * Chrome's native text engine handles Arabic shaping, RTL, and bidi perfectly —
@@ -350,7 +350,7 @@ function buildInvoiceHtml(order) {
 
   <!-- Header -->
   <div class="header">
-    <div class="brand">MAGEED GROUP</div>
+    <div class="brand">MAGED GROUP</div>
     <div class="subtitle">قطع غيار الموتوسيكلات والتروسيكلات</div>
     <div class="accent-bar"></div>
   </div>
@@ -426,7 +426,7 @@ function buildInvoiceHtml(order) {
 
   <!-- Footer -->
   <div class="footer">
-    <p>MAGEED GROUP — قطع غيار الموتوسيكلات والتروسيكلات</p>
+    <p>MAGED GROUP — قطع غيار الموتوسيكلات والتروسيكلات</p>
     <div class="accent-bar"></div>
   </div>
 

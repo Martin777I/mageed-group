@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Audit Logging Service
+ * MAGED GROUP — Audit Logging Service
  * Records administrative actions to the AuditLog table.
  *
  * Usage:

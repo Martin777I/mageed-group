@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Health & Monitoring Controller
+ * MAGED GROUP — Health & Monitoring Controller
  * System health checks, alerts, and monitoring endpoints.
  */
 
@@ -17,7 +17,7 @@ exports.healthCheck = async (req, res) => {
     res.json({
       success: true,
       status: dbCheck.connected ? 'healthy' : 'degraded',
-      message: 'MAGEED GROUP API is running',
+      message: 'MAGED GROUP API is running',
       timestamp: new Date().toISOString(),
       uptime: Math.floor(process.uptime()),
       database: dbCheck.connected ? 'connected' : 'disconnected',

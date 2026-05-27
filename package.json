@@ -1,9 +1,9 @@
 {
-  "name": "mageed-group",
+  "name": "MAGED-group",
   "version": "2.1.0",
   "private": true,
-  "description": "MAGEED GROUP — Motorcycle Spare Parts ERP System. Full-stack inventory, orders, returns, analytics, and customer management.",
-  "author": "MAGEED GROUP",
+  "description": "MAGED GROUP — Motorcycle Spare Parts ERP System. Full-stack inventory, orders, returns, analytics, and customer management.",
+  "author": "MAGED GROUP",
   "license": "UNLICENSED",
   "repository": {
     "type": "git",

@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Alerts Routes
+ * MAGED GROUP — Alerts Routes
  */
 
 const express = require('express');

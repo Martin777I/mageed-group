@@ -1,8 +1,8 @@
-# MAGEED GROUP — Complete Deployment Guide
+# MAGED GROUP — Complete Deployment Guide
 
 ## Overview
 
-This guide covers deploying the MAGEED GROUP ERP system with:
+This guide covers deploying the MAGED GROUP ERP system with:
 - **Frontend**: Vercel (free tier)
 - **Backend**: Railway ($5/month)
 - **Database**: Railway MySQL or Aiven MySQL (free tier)
@@ -46,7 +46,7 @@ This guide covers deploying the MAGEED GROUP ERP system with:
    - **Cloud Name**
    - **API Key**
    - **API Secret**
-3. Create a folder called `mageed-group` (optional, auto-created on first upload)
+3. Create a folder called `MAGED-group` (optional, auto-created on first upload)
 
 ---
 
@@ -80,7 +80,7 @@ FRONTEND_URL=https://your-app.vercel.app
 CLOUDINARY_CLOUD_NAME=your-cloud-name
 CLOUDINARY_API_KEY=your-api-key
 CLOUDINARY_API_SECRET=your-api-secret
-CLOUDINARY_FOLDER=mageed-group
+CLOUDINARY_FOLDER=MAGED-group
 
 # Rate limiting
 RATE_LIMIT_WINDOW_MS=900000
@@ -117,7 +117,7 @@ node src/utils/seed.js
 
 Railway will give you a URL like:
 ```
-https://mageed-group-backend-production.up.railway.app
+https://MAGED-group-backend-production.up.railway.app
 ```
 
 ---
@@ -137,7 +137,7 @@ In Vercel → **Settings** → **Environment Variables**:
 
 ```env
 VITE_API_URL=https://your-railway-backend.up.railway.app/api
-VITE_APP_NAME=MAGEED GROUP
+VITE_APP_NAME=MAGED GROUP
 ```
 
 ### 4.3 Build Settings
@@ -154,7 +154,7 @@ Click **Deploy**. Vercel will build and deploy automatically.
 
 Vercel will give you a URL like:
 ```
-https://mageed-group.vercel.app
+https://MAGED-group.vercel.app
 ```
 
 ---
@@ -165,7 +165,7 @@ Go back to Railway → your backend service → **Variables**:
 
 Update `FRONTEND_URL` with your actual Vercel URL:
 ```
-FRONTEND_URL=https://mageed-group.vercel.app
+FRONTEND_URL=https://MAGED-group.vercel.app
 ```
 
 Railway will auto-redeploy.
@@ -181,8 +181,8 @@ curl https://your-backend.up.railway.app/api/health
 Expected: `{"success":true,"status":"healthy",...}`
 
 ### Admin Login
-1. Open `https://mageed-group.vercel.app/login`
-2. Login with: `admin@mageed.com` / `admin123`
+1. Open `https://MAGED-group.vercel.app/login`
+2. Login with: `admin@MAGED.com` / `admin123`
 3. **IMPORTANT**: Change the admin password immediately!
 
 ### Test Order Flow
@@ -201,12 +201,12 @@ Expected: `{"success":true,"status":"healthy",...}`
 
 ### Vercel (Frontend)
 1. Go to Vercel → **Settings** → **Domains**
-2. Add your domain (e.g., `mageed-group.com`)
+2. Add your domain (e.g., `MAGED-group.com`)
 3. Update DNS records as instructed by Vercel
 
 ### Railway (Backend)
 1. Go to Railway → your service → **Settings** → **Networking**
-2. Add custom domain (e.g., `api.mageed-group.com`)
+2. Add custom domain (e.g., `api.MAGED-group.com`)
 3. Update DNS records
 4. Update `FRONTEND_URL` and `VITE_API_URL` accordingly
 
@@ -227,7 +227,7 @@ Expected: `{"success":true,"status":"healthy",...}`
 | `CLOUDINARY_CLOUD_NAME` | Yes | `your-cloud-name` |
 | `CLOUDINARY_API_KEY` | Yes | `123456789` |
 | `CLOUDINARY_API_SECRET` | Yes | `abc123...` |
-| `CLOUDINARY_FOLDER` | No | `mageed-group` |
+| `CLOUDINARY_FOLDER` | No | `MAGED-group` |
 | `RATE_LIMIT_MAX` | No | `100` |
 | `RATE_LIMIT_LOGIN_MAX` | No | `10` |
 | `LOG_LEVEL` | No | `info` |
@@ -237,7 +237,7 @@ Expected: `{"success":true,"status":"healthy",...}`
 | Variable | Required | Example |
 |----------|----------|---------|
 | `VITE_API_URL` | Yes | `https://backend.railway.app/api` |
-| `VITE_APP_NAME` | No | `MAGEED GROUP` |
+| `VITE_APP_NAME` | No | `MAGED GROUP` |
 
 ---
 

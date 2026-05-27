@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Database Backup Utility
+ * MAGED GROUP — Database Backup Utility
  * Export and restore database data as JSON files.
  * 
  * Usage:
@@ -192,7 +192,7 @@ if (require.main === module) {
           break;
         default:
           console.log(`
-MAGEED GROUP — Backup Utility
+MAGED GROUP — Backup Utility
 
 Usage:
   node src/utils/backup.js export              Export all tables

@@ -35,7 +35,7 @@ export default function Login() {
             M
           </div>
           <h1 className="text-2xl font-bold text-white">لوحة الإدارة</h1>
-          <p className="text-gray-400 text-sm mt-1">مجموعة مجيد - قطع الغيار</p>
+          <p className="text-gray-400 text-sm mt-1">مجموعة ماجد - قطع الغيار</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-5">

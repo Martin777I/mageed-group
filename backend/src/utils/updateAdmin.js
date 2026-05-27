@@ -1,10 +1,10 @@
 /**
- * MAGEED GROUP — Update Admin Credentials
+ * MAGED GROUP — Update Admin Credentials
  * Usage: node src/utils/updateAdmin.js <email> <password> [name]
  *
  * Examples:
- *   node src/utils/updateAdmin.js newadmin@mageed.com MyNewPassword123
- *   node src/utils/updateAdmin.js newadmin@mageed.com MyNewPassword123 "اسم الأدمن"
+ *   node src/utils/updateAdmin.js newadmin@MAGED.com MyNewPassword123
+ *   node src/utils/updateAdmin.js newadmin@MAGED.com MyNewPassword123 "اسم الأدمن"
  */
 
 const prisma = require('../config/prisma');

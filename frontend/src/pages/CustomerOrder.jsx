@@ -105,7 +105,7 @@ export default function CustomerOrder() {
           <div className="w-16 h-16 mx-auto mb-4 rounded-2xl bg-gradient-to-br from-brand-500 to-brand-700 flex items-center justify-center text-white text-2xl font-bold shadow-xl shadow-brand-500/30">
             M
           </div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">مجموعة مجيد</h1>
+          <h1 className="text-2xl sm:text-3xl font-bold text-white mb-1">مجموعة ماجد</h1>
           <p className="text-brand-400 text-sm">قطع غيار الموتوسيكلات والتوك توك</p>
         </div>
       </header>

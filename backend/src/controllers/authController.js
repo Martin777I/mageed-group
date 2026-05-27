@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Auth Controller
+ * MAGED GROUP — Auth Controller
  * Login and session management.
  * Uses singleton PrismaClient + structured logging.
  */

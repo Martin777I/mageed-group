@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Order Controller
+ * MAGED GROUP — Order Controller
  * Order management with inventory transactions.
  * Uses singleton PrismaClient + structured logging.
  */

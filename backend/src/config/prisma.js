@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Singleton PrismaClient
+ * MAGED GROUP — Singleton PrismaClient
  * 
  * CRITICAL: This file must be the ONLY place PrismaClient is instantiated.
  * All other files must import from here: const prisma = require('../config/prisma');

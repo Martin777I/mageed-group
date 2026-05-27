@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Production Security Middleware
+ * MAGED GROUP — Production Security Middleware
  * Helmet, rate limiting, compression, CORS, request size limits.
  */
 

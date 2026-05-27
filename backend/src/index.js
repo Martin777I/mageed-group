@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Production Backend Server
+ * MAGED GROUP — Production Backend Server
  * 
  * Express application with:
  * - Security middleware (helmet, CORS, rate limiting, compression)
@@ -110,7 +110,7 @@ app.use(errorHandler);
 
 const server = app.listen(config.port, () => {
   logger.info('═══════════════════════════════════════════');
-  logger.info('  MAGEED GROUP — Server Started');
+  logger.info('  MAGED GROUP — Server Started');
   logger.info('═══════════════════════════════════════════');
   logger.info(`  Environment : ${config.env}`);
   logger.info(`  Port        : ${config.port}`);

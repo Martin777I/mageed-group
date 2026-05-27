@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Health & Monitoring Routes
+ * MAGED GROUP — Health & Monitoring Routes
  */
 
 const express = require('express');

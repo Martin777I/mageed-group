@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Product Controller
+ * MAGED GROUP — Product Controller
  * Products CRUD + Excel import with preview.
  * Uses singleton PrismaClient + structured logging.
  */

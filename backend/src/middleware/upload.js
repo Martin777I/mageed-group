@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Upload Middleware
+ * MAGED GROUP — Upload Middleware
  * 
  * Excel files: disk storage (needed for xlsx parsing)
  * Images (logos): memory storage (buffer → Cloudinary)

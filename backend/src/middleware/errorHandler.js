@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Centralized Error Handler
+ * MAGED GROUP — Centralized Error Handler
  * Catches all errors and returns consistent JSON responses.
  * Maps Prisma, Multer, and JWT errors to proper HTTP status codes.
  */

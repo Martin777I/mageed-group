@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Company Controller
+ * MAGED GROUP — Company Controller
  * CRUD for companies with Cloudinary image uploads.
  * Uses singleton PrismaClient + Cloudinary service.
  */

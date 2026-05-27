@@ -1,4 +1,4 @@
-# Contributing to MAGEED GROUP
+# Contributing to MAGED GROUP
 
 ## Development Setup
 

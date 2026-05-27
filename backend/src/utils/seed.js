@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Database Seed Script
+ * MAGED GROUP — Database Seed Script
  * Creates default admin user and sample products.
  * 
  * Usage: node src/utils/seed.js
@@ -12,7 +12,7 @@ const bcrypt = require('bcryptjs');
 
 async function seed() {
   try {
-    const existing = await prisma.admin.findUnique({ where: { email: 'admin@mageed.com' } });
+    const existing = await prisma.admin.findUnique({ where: { email: 'admin@MAGED.com' } });
     if (existing) {
       console.log('Admin already exists. Skipping seed.');
       return;
@@ -22,7 +22,7 @@ async function seed() {
     await prisma.admin.create({
       data: {
         name: 'مدير النظام',
-        email: 'admin@mageed.com',
+        email: 'admin@MAGED.com',
         password: hashedPassword,
       },
     });
@@ -44,7 +44,7 @@ async function seed() {
     });
 
     console.log('Seed completed successfully!');
-    console.log('Admin: admin@mageed.com / admin123');
+    console.log('Admin: admin@MAGED.com / admin123');
   } catch (error) {
     console.error('Seed error:', error);
   } finally {

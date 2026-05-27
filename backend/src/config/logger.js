@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Production Logging System
+ * MAGED GROUP — Production Logging System
  * Winston-based structured logging with file rotation.
  */
 
@@ -32,7 +32,7 @@ const jsonFormat = winston.format.combine(
 // ── Create logger ──
 const logger = winston.createLogger({
   level: config.log.level,
-  defaultMeta: { service: 'mageed-group' },
+  defaultMeta: { service: 'MAGED-group' },
   transports: [],
 });
 

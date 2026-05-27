@@ -1,8 +1,8 @@
 {
-  "name": "mageed-group-frontend",
+  "name": "MAGED-group-frontend",
   "version": "2.1.0",
   "private": true,
-  "description": "MAGEED GROUP — ERP Frontend (React + Vite + TailwindCSS)",
+  "description": "MAGED GROUP — ERP Frontend (React + Vite + TailwindCSS)",
   "type": "module",
   "scripts": {
     "dev": "vite",

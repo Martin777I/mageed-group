@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Return Controller
+ * MAGED GROUP — Return Controller
  * Returns management with stock restoration.
  * Uses singleton PrismaClient + structured logging.
  */

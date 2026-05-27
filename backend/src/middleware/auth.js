@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Authentication Middleware
+ * MAGED GROUP — Authentication Middleware
  * Verifies JWT tokens and attaches admin ID to request.
  * Enhanced with structured error responses for Flutter compatibility.
  */

@@ -1,5 +1,5 @@
 # ══════════════════════════════════════════════
-# MAGEED GROUP — CI/CD Pipeline
+# MAGED GROUP — CI/CD Pipeline
 # Runs on every push and pull request to main
 # ══════════════════════════════════════════════
 
@@ -113,7 +113,7 @@ jobs:
         run: npm run build
         env:
           VITE_API_URL: "https://api.example.com/api"
-          VITE_APP_NAME: "MAGEED GROUP"
+          VITE_APP_NAME: "MAGED GROUP"
 
       - name: Verify build output
         working-directory: frontend

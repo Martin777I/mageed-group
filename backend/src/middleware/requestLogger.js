@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — HTTP Request Logger Middleware
+ * MAGED GROUP — HTTP Request Logger Middleware
  * Logs all incoming requests with method, URL, status, response time.
  */
 

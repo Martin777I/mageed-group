@@ -1,4 +1,4 @@
-# MAGEED GROUP — Backup Strategy Guide
+# MAGED GROUP — Backup Strategy Guide
 
 ## Backup Layers
 

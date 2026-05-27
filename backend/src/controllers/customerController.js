@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Customer Controller
+ * MAGED GROUP — Customer Controller
  * Customer CRUD + search + statistics.
  * Uses singleton PrismaClient + structured logging.
  */

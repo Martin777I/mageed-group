@@ -1,5 +1,5 @@
 /**
- * MAGEED GROUP — Seed Script (Root-level wrapper)
+ * MAGED GROUP — Seed Script (Root-level wrapper)
  *
  * This file delegates to the proper seed script that uses the
  * singleton PrismaClient. DO NOT create new PrismaClient() here.

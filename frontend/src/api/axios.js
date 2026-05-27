@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 /**
- * MAGEED GROUP — Axios API Client
+ * MAGED GROUP — Axios API Client
  * 
  * Uses VITE_API_URL in production (direct backend URL)
  * Falls back to '/api' in development (Vite proxy handles it)
