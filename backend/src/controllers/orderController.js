@@ -123,7 +123,7 @@ exports.getStats = async (req, res) => {
     ] = await Promise.all([
       prisma.product.count({ where: { isActive: true } }),
       prisma.order.count({ where: { status: 'pending' } }),
-      prisma.order.count({ where: { createdAt: { gte: today } } }),
+      prisma.order.count({ where: { status: 'accepted', createdAt: { gte: today } } }),
       prisma.order.findMany({
         where: { status: 'accepted', createdAt: { gte: today } },
         select: { totalAmount: true },
@@ -176,6 +176,7 @@ exports.getStats = async (req, res) => {
     // Top selling products
     const topProducts = await prisma.orderItem.groupBy({
       by: ['productId'],
+      where: { order: { status: 'accepted' } },
       _sum: { quantity: true, total: true },
       orderBy: { _sum: { total: 'desc' } },
       take: 5,
@@ -198,6 +199,7 @@ exports.getStats = async (req, res) => {
     // Top companies — aggregate by product.companyId using groupBy
     const companyGroups = await prisma.orderItem.groupBy({
       by: ['productId'],
+      where: { order: { status: 'accepted' } },
       _sum: { total: true, quantity: true },
       orderBy: { _sum: { total: 'desc' } },
       take: 50, // Limit to top 50 products for aggregation

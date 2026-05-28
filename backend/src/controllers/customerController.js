@@ -27,7 +27,12 @@ exports.getAllCustomers = async (req, res) => {
       prisma.customer.findMany({
         where,
         include: {
-          _count: { select: { orders: true, returns: true } },
+          _count: {
+            select: {
+              orders: { where: { status: 'accepted' } },
+              returns: true,
+            },
+          },
         },
         skip,
         take: parseInt(limit),

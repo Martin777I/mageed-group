@@ -81,7 +81,7 @@ async function findOrCreateCustomer({ name, phone, address, notes }, tx = prisma
  */
 async function getCustomerStats(customerId) {
   const [totalOrders, totalReturns, ordersData, returnsData, lastOrder] = await Promise.all([
-    prisma.order.count({ where: { customerId } }),
+    prisma.order.count({ where: { customerId, status: 'accepted' } }),
     prisma.return.count({ where: { customerId } }),
     prisma.order.aggregate({
       where: { customerId, status: 'accepted' },
