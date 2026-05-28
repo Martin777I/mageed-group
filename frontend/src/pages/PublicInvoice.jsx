@@ -1,24 +1,26 @@
 import { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useSearchParams } from 'react-router-dom';
 import api from '../api/axios';
 import { generateInvoiceHtml } from '../utils/invoiceGenerator';
 
 /**
  * Public Invoice Page — accessible without login
- * URL: /invoice/:orderNumber
+ * URL: /invoice/:orderNumber?token=xxxxx
  * 
- * Fetches order data from a public API endpoint,
+ * Fetches order data from a public API endpoint (requires valid token),
  * then renders the invoice HTML in a full-page iframe.
  */
 export default function PublicInvoice() {
   const { orderNumber } = useParams();
+  const [searchParams] = useSearchParams();
+  const token = searchParams.get('token');
   const [status, setStatus] = useState('loading'); // loading | ready | error
   const [html, setHtml] = useState('');
 
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const res = await api.get(`/orders/invoice/${orderNumber}/data`);
+        const res = await api.get(`/orders/invoice/${orderNumber}/data?token=${token}`);
         const order = res.data;
         const invoiceHtml = generateInvoiceHtml(order);
         setHtml(invoiceHtml);

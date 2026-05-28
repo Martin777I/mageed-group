@@ -6,10 +6,24 @@
 
 const prisma = require('../config/prisma');
 const logger = require('../config/logger');
+const crypto = require('crypto');
+const config = require('../config/config');
 const { generateInvoicePdf, buildInvoiceHtml } = require('../utils/pdfGenerator');
 const { deductStock, restoreStock, recalculateStock } = require('../utils/inventoryService');
 const { findOrCreateCustomer } = require('../utils/customerService');
 const { logAudit } = require('../utils/auditService');
+
+/**
+ * Generate a secure share token for an order (deterministic, no DB needed).
+ * Uses HMAC-SHA256 with JWT_SECRET so tokens can't be forged.
+ */
+function generateShareToken(orderNumber) {
+  return crypto
+    .createHmac('sha256', config.jwt.secret)
+    .update(orderNumber)
+    .digest('hex')
+    .substring(0, 16);
+}
 
 function generateOrderNumber() {
   const date = new Date();
@@ -123,7 +137,7 @@ exports.getStats = async (req, res) => {
     ] = await Promise.all([
       prisma.product.count({ where: { isActive: true } }),
       prisma.order.count({ where: { status: 'pending' } }),
-      prisma.order.count({ where: { status: 'accepted', createdAt: { gte: today } } }),
+      prisma.order.count({ where: { status: { not: 'rejected' }, createdAt: { gte: today } } }),
       prisma.order.findMany({
         where: { status: 'accepted', createdAt: { gte: today } },
         select: { totalAmount: true },
@@ -325,7 +339,10 @@ exports.getOrderById = async (req, res) => {
     if (!order) {
       return res.status(404).json({ message: 'الطلب غير موجود' });
     }
-    res.json(order);
+
+    // Include share token for admin (used in WhatsApp sharing)
+    const shareToken = generateShareToken(order.orderNumber);
+    res.json({ ...order, shareToken });
   } catch (error) {
     logger.error('GetOrderById error:', error);
     res.status(500).json({ message: 'خطأ في جلب الطلب' });
@@ -553,6 +570,12 @@ exports.generatePdf = async (req, res) => {
 // Returns order data as JSON for the frontend to render
 exports.getPublicInvoiceData = async (req, res) => {
   try {
+    // Validate share token
+    const { token } = req.query;
+    if (!token || token !== generateShareToken(req.params.orderNumber)) {
+      return res.status(403).json({ message: 'رابط الفاتورة غير صالح' });
+    }
+
     const order = await prisma.order.findUnique({
       where: { orderNumber: req.params.orderNumber },
       include: { items: true },
