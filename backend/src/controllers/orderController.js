@@ -6,7 +6,7 @@
 
 const prisma = require('../config/prisma');
 const logger = require('../config/logger');
-const { generateInvoicePdf } = require('../utils/pdfGenerator');
+const { generateInvoicePdf, buildInvoiceHtml } = require('../utils/pdfGenerator');
 const { deductStock, restoreStock, recalculateStock } = require('../utils/inventoryService');
 const { findOrCreateCustomer } = require('../utils/customerService');
 const { logAudit } = require('../utils/auditService');
@@ -548,3 +548,30 @@ exports.generatePdf = async (req, res) => {
     }
   }
 };
+
+// GET /api/orders/invoice/:orderNumber — PUBLIC invoice page (no auth)
+// Used for sharing invoice links via WhatsApp
+exports.getPublicInvoice = async (req, res) => {
+  try {
+    const order = await prisma.order.findUnique({
+      where: { orderNumber: req.params.orderNumber },
+      include: { items: true },
+    });
+
+    if (!order || order.status !== 'accepted') {
+      return res.status(404).send(`
+        <html dir="rtl"><head><meta charset="UTF-8"><title>غير موجود</title>
+        <style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#94a3b8;}</style>
+        </head><body><h2>الفاتورة غير متوفرة</h2></body></html>
+      `);
+    }
+
+    const html = buildInvoiceHtml(order);
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+  } catch (error) {
+    logger.error('GetPublicInvoice error:', error);
+    res.status(500).send('خطأ في عرض الفاتورة');
+  }
+};
+

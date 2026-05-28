@@ -486,4 +486,4 @@ async function generateInvoicePdf(order, stream) {
   }
 }
 
-module.exports = { generateInvoicePdf };
+module.exports = { generateInvoicePdf, buildInvoiceHtml };

@@ -117,7 +117,11 @@ export default function OrderDetail() {
     if (phone.startsWith('0')) phone = '2' + phone; // Egypt: 0xxx → 20xxx
     if (!phone.startsWith('2')) phone = '2' + phone;
 
-    // Build invoice message
+    // Build invoice link
+    const apiBase = import.meta.env.VITE_API_URL || '';
+    const invoiceLink = `${apiBase}/orders/invoice/${order.orderNumber}`;
+
+    // Build invoice message with link
     const fmtPrice = (v) => Number(v || 0).toFixed(2);
     const date = new Date(order.createdAt).toLocaleDateString('ar-EG', { year: 'numeric', month: 'long', day: 'numeric' });
 
@@ -138,7 +142,8 @@ export default function OrderDetail() {
     msg += `━━━━━━━━━━━━━━━━━━\n`;
     msg += `💰 *الإجمالي: ${fmtPrice(order.totalAmount)} EGP*\n`;
     if (order.notes) msg += `📝 ملاحظات: ${order.notes}\n`;
-    msg += `━━━━━━━━━━━━━━━━━━\n`;
+    msg += `━━━━━━━━━━━━━━━━━━\n\n`;
+    msg += `📄 *لعرض الفاتورة كاملة:*\n${invoiceLink}\n\n`;
     msg += `شكراً لتعاملكم مع *MAGED GROUP* 🏍️`;
 
     const url = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
