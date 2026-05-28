@@ -10,12 +10,12 @@ const {
   updateOrderItems,
   generatePdf,
   getStats,
-  getPublicInvoice,
+  getPublicInvoiceData,
 } = require('../controllers/orderController');
 
 // Public routes
 router.post('/', createOrder);
-router.get('/invoice/:orderNumber', getPublicInvoice);
+router.get('/invoice/:orderNumber/data', getPublicInvoiceData);
 
 // Admin routes
 router.get('/stats', auth, getStats);

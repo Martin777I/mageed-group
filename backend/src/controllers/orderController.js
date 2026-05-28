@@ -549,9 +549,9 @@ exports.generatePdf = async (req, res) => {
   }
 };
 
-// GET /api/orders/invoice/:orderNumber — PUBLIC invoice page (no auth)
-// Used for sharing invoice links via WhatsApp
-exports.getPublicInvoice = async (req, res) => {
+// GET /api/orders/invoice/:orderNumber/data — PUBLIC invoice data (no auth)
+// Returns order data as JSON for the frontend to render
+exports.getPublicInvoiceData = async (req, res) => {
   try {
     const order = await prisma.order.findUnique({
       where: { orderNumber: req.params.orderNumber },
@@ -559,19 +559,28 @@ exports.getPublicInvoice = async (req, res) => {
     });
 
     if (!order || order.status !== 'accepted') {
-      return res.status(404).send(`
-        <html dir="rtl"><head><meta charset="UTF-8"><title>غير موجود</title>
-        <style>body{font-family:sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;background:#0f172a;color:#94a3b8;}</style>
-        </head><body><h2>الفاتورة غير متوفرة</h2></body></html>
-      `);
+      return res.status(404).json({ message: 'الفاتورة غير متوفرة' });
     }
 
-    const html = buildInvoiceHtml(order);
-    res.setHeader('Content-Type', 'text/html; charset=utf-8');
-    res.send(html);
+    // Return only the data needed for the invoice (no sensitive info)
+    res.json({
+      orderNumber: order.orderNumber,
+      customerName: order.customerName,
+      customerPhone: order.customerPhone,
+      status: order.status,
+      totalAmount: order.totalAmount,
+      notes: order.notes,
+      createdAt: order.createdAt,
+      items: order.items.map((item) => ({
+        productCode: item.productCode,
+        productName: item.productName,
+        price: item.price,
+        quantity: item.quantity,
+        total: item.total,
+      })),
+    });
   } catch (error) {
-    logger.error('GetPublicInvoice error:', error);
-    res.status(500).send('خطأ في عرض الفاتورة');
+    logger.error('GetPublicInvoiceData error:', error);
+    res.status(500).json({ message: 'خطأ في جلب بيانات الفاتورة' });
   }
 };
-

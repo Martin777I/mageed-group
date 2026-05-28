@@ -15,6 +15,7 @@ import OrderDetail from './pages/OrderDetail';
 import Returns from './pages/Returns';
 import ImportProducts from './pages/ImportProducts';
 import ImportHistory from './pages/ImportHistory';
+import PublicInvoice from './pages/PublicInvoice';
 
 function ProtectedRoute({ children }) {
   const { admin, loading } = useAuth();
@@ -49,6 +50,7 @@ export default function App() {
           {/* Public routes */}
           <Route path="/" element={<CustomerOrder />} />
           <Route path="/order-success/:orderNumber" element={<OrderSuccess />} />
+          <Route path="/invoice/:orderNumber" element={<PublicInvoice />} />
           <Route path="/login" element={<Login />} />
 
           {/* Admin routes */}

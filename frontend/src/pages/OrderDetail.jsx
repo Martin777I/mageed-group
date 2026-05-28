@@ -117,9 +117,8 @@ export default function OrderDetail() {
     if (phone.startsWith('0')) phone = '2' + phone; // Egypt: 0xxx → 20xxx
     if (!phone.startsWith('2')) phone = '2' + phone;
 
-    // Build invoice link
-    const apiBase = import.meta.env.VITE_API_URL || '';
-    const invoiceLink = `${apiBase}/orders/invoice/${order.orderNumber}`;
+    // Build invoice link — uses frontend domain (not backend)
+    const invoiceLink = `${window.location.origin}/invoice/${order.orderNumber}`;
 
     // Build invoice message with link
     const fmtPrice = (v) => Number(v || 0).toFixed(2);
