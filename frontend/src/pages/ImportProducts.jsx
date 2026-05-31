@@ -140,7 +140,7 @@ export default function ImportProducts() {
           <p className="text-sm text-gray-400 mb-4">يدعم ملفات .xlsx — الحد الأقصى 5 ميجابايت</p>
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-900/80 border border-brand-800/30 text-xs text-gray-500">
             <span>الأعمدة:</span>
-            <span className="text-brand-400">code, name, price, stock, category, company</span>
+            <span className="text-brand-400">code, name, price, retailPrice, stock, category, company</span>
           </div>
         </div>
       )}
@@ -262,7 +262,8 @@ export default function ImportProducts() {
                     <tr className="text-gray-400 text-xs border-b border-brand-800/30">
                       <th className="text-right p-3">الكود</th>
                       <th className="text-right p-3">الاسم</th>
-                      <th className="text-right p-3">السعر</th>
+                      <th className="text-right p-3">سعر الجملة</th>
+                      <th className="text-right p-3">سعر القطاعي</th>
                       <th className="text-right p-3">مخزون حالي</th>
                       <th className="text-right p-3">مخزون الملف</th>
                       <th className="text-right p-3">المخزون الناتج</th>
@@ -275,6 +276,7 @@ export default function ImportProducts() {
                         <td className="p-3 text-brand-400 font-mono" dir="ltr">{row.code}</td>
                         <td className="p-3 text-white">{row.name}</td>
                         <td className="p-3 text-gray-400" dir="ltr">{row.price || '—'}</td>
+                        <td className="p-3 text-gray-400" dir="ltr">{row.retailPrice || '—'}</td>
                         <td className="p-3 text-gray-500" dir="ltr">{row.oldStock}</td>
                         <td className="p-3 text-cyan-400" dir="ltr">{row.importedStock}</td>
                         <td className="p-3 text-white font-bold" dir="ltr">

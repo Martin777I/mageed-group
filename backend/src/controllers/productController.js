@@ -55,7 +55,7 @@ exports.getProductByCode = async (req, res) => {
   try {
     const product = await prisma.product.findUnique({
       where: { code: req.params.code },
-      select: { id: true, code: true, name: true, price: true, stock: true, isActive: true, companyId: true },
+      select: { id: true, code: true, name: true, price: true, retailPrice: true, stock: true, isActive: true, companyId: true, company: { select: { id: true, name: true, color: true } } },
     });
     if (!product || !product.isActive) {
       return res.status(404).json({ message: 'المنتج غير موجود' });
@@ -89,6 +89,7 @@ exports.searchProducts = async (req, res) => {
         code: true,
         name: true,
         price: true,
+        retailPrice: true,
         stock: true,
         company: { select: { id: true, name: true, color: true } },
       },
@@ -105,7 +106,7 @@ exports.searchProducts = async (req, res) => {
 
 exports.createProduct = async (req, res) => {
   try {
-    const { code, name, price, category, stock, companyId } = req.body;
+    const { code, name, price, retailPrice, category, stock, companyId } = req.body;
     if (!code || !name || price === undefined) {
       return res.status(400).json({ message: 'كود المنتج والاسم والسعر مطلوبون' });
     }
@@ -119,6 +120,7 @@ exports.createProduct = async (req, res) => {
       code,
       name,
       price: parseFloat(price),
+      retailPrice: retailPrice !== undefined && retailPrice !== '' ? parseFloat(retailPrice) : null,
       category: category || null,
       stock: parseInt(stock) || 0,
     };
@@ -149,12 +151,13 @@ exports.createProduct = async (req, res) => {
 exports.updateProduct = async (req, res) => {
   try {
     const { id } = req.params;
-    const { code, name, price, category, stock, isActive, companyId } = req.body;
+    const { code, name, price, retailPrice, category, stock, isActive, companyId } = req.body;
 
     const data = {};
     if (code !== undefined) data.code = code;
     if (name !== undefined) data.name = name;
     if (price !== undefined) data.price = Math.max(0, parseFloat(price) || 0);
+    if (retailPrice !== undefined) data.retailPrice = retailPrice !== null && retailPrice !== '' ? Math.max(0, parseFloat(retailPrice) || 0) : null;
     if (category !== undefined) data.category = category;
     if (stock !== undefined) data.stock = Math.max(0, parseInt(stock) || 0);
     if (isActive !== undefined) data.isActive = isActive;

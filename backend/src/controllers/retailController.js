@@ -52,13 +52,16 @@ exports.createRetailInvoice = async (req, res) => {
           throw new Error(`المخزون غير كافٍ لـ ${product.name}: مطلوب ${qty}، متوفر ${product.stock}`);
         }
 
+        // Use retail price if available, otherwise fall back to wholesale price
+        const unitPrice = product.retailPrice != null ? product.retailPrice : product.price;
+
         invoiceItems.push({
           productId: product.id,
           productCode: product.code,
           productName: product.name,
-          price: product.price,
+          price: unitPrice,
           quantity: qty,
-          total: product.price * qty,
+          total: unitPrice * qty,
         });
       }
 

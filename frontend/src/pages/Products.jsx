@@ -6,7 +6,7 @@ import Modal from '../components/Modal';
 import LoadingSpinner from '../components/LoadingSpinner';
 import { formatCurrency } from '../utils/helpers';
 
-const emptyProduct = { code: '', name: '', price: '', category: '', stock: '0', companyId: '' };
+const emptyProduct = { code: '', name: '', price: '', retailPrice: '', category: '', stock: '0', companyId: '' };
 
 export default function Products() {
   const navigate = useNavigate();
@@ -61,6 +61,7 @@ export default function Products() {
       code: p.code,
       name: p.name,
       price: String(p.price),
+      retailPrice: p.retailPrice != null ? String(p.retailPrice) : '',
       category: p.category || '',
       stock: String(p.stock),
       companyId: p.companyId ? String(p.companyId) : '',
@@ -169,7 +170,8 @@ export default function Products() {
                   <th className="text-right p-4 font-medium">الكود</th>
                   <th className="text-right p-4 font-medium">الاسم</th>
                   <th className="text-right p-4 font-medium">الشركة</th>
-                  <th className="text-right p-4 font-medium">السعر</th>
+                  <th className="text-right p-4 font-medium">سعر الجملة</th>
+                  <th className="text-right p-4 font-medium">سعر القطاعي</th>
                   <th className="text-right p-4 font-medium">الفئة</th>
                   <th className="text-right p-4 font-medium">المخزون</th>
                   <th className="text-right p-4 font-medium">الحالة</th>
@@ -192,6 +194,7 @@ export default function Products() {
                       )}
                     </td>
                     <td className="p-4 text-sm text-accent-400 font-bold">{formatCurrency(p.price)}</td>
+                    <td className="p-4 text-sm text-green-400 font-bold">{p.retailPrice != null ? formatCurrency(p.retailPrice) : <span className="text-gray-600 font-normal">—</span>}</td>
                     <td className="p-4 text-sm text-gray-400">{p.category || '—'}</td>
                     <td className="p-4 text-sm text-gray-400">{p.stock}</td>
                     <td className="p-4">
@@ -305,11 +308,17 @@ export default function Products() {
             )}
           </div>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm text-gray-400 mb-1">السعر</label>
+              <label className="block text-sm text-gray-400 mb-1">سعر الجملة</label>
               <input type="number" step="0.01" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} placeholder="0.00" dir="ltr" className="w-full px-3 py-2.5 rounded-xl bg-brand-900/80 border border-brand-800/50 text-white text-sm focus:border-brand-500 transition-all" required />
             </div>
+            <div>
+              <label className="block text-sm text-gray-400 mb-1">سعر القطاعي <span className="text-gray-600">(اختياري)</span></label>
+              <input type="number" step="0.01" value={form.retailPrice} onChange={(e) => setForm({ ...form, retailPrice: e.target.value })} placeholder="0.00" dir="ltr" className="w-full px-3 py-2.5 rounded-xl bg-brand-900/80 border border-brand-800/50 text-white text-sm focus:border-brand-500 transition-all" />
+            </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-gray-400 mb-1">الفئة</label>
               <input type="text" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} placeholder="فرامل" className="w-full px-3 py-2.5 rounded-xl bg-brand-900/80 border border-brand-800/50 text-white text-sm focus:border-brand-500 transition-all" />

@@ -76,7 +76,7 @@ async function resolveCompany(companyName, companyCache, tx) {
 async function generatePreview(validRows, mode, stockBehavior = 'REPLACE') {
   const existingProducts = await prisma.product.findMany({
     where: { code: { in: validRows.map((r) => r.code) } },
-    select: { code: true, stock: true, name: true, price: true },
+    select: { code: true, stock: true, name: true, price: true, retailPrice: true },
   });
   const existingMap = {};
   for (const p of existingProducts) {
@@ -116,6 +116,7 @@ async function generatePreview(validRows, mode, stockBehavior = 'REPLACE') {
       code: row.code,
       name: row.name,
       price: row.price,
+      retailPrice: row.retailPrice,
       stock: row.stock,
       category: row.category,
       company: row.company,
@@ -236,6 +237,7 @@ async function processImport(filePath, mode, stockBehavior, adminId, fileName) {
                   code,
                   name: row.name,
                   price: parseFloat(row.price) || 0,
+                  retailPrice: row.retailPrice ? parseFloat(row.retailPrice) : null,
                   category: row.category || null,
                   stock: Math.max(0, finalStock),
                   ...(companyId !== null && { companyId }),
@@ -262,6 +264,7 @@ async function processImport(filePath, mode, stockBehavior, adminId, fileName) {
                 data: {
                   name: row.name,
                   price: parseFloat(row.price) || 0,
+                  retailPrice: row.retailPrice ? parseFloat(row.retailPrice) : undefined,
                   category: row.category || null,
                   stock: Math.max(0, finalStock),
                   ...(companyId !== null && { companyId }),
@@ -282,6 +285,7 @@ async function processImport(filePath, mode, stockBehavior, adminId, fileName) {
                 data: {
                   name: row.name,
                   price: parseFloat(row.price) || 0,
+                  retailPrice: row.retailPrice ? parseFloat(row.retailPrice) : undefined,
                   category: row.category || null,
                   stock: Math.max(0, finalStock),
                   ...(companyId !== null && { companyId }),
@@ -298,6 +302,7 @@ async function processImport(filePath, mode, stockBehavior, adminId, fileName) {
                   code,
                   name: row.name,
                   price: parseFloat(row.price) || 0,
+                  retailPrice: row.retailPrice ? parseFloat(row.retailPrice) : null,
                   category: row.category || null,
                   stock: Math.max(0, finalStock),
                   ...(companyId !== null && { companyId }),

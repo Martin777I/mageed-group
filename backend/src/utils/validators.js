@@ -4,12 +4,13 @@
  */
 
 const COLUMN_MAP = {
-  code: ['code', 'Code', 'كود'],
-  name: ['name', 'Name', 'اسم', 'اسم المنتج'],
-  price: ['price', 'Price', 'سعر'],
-  stock: ['stock', 'Stock', 'مخزون'],
-  category: ['category', 'Category', 'فئة'],
-  company: ['company', 'Company', 'شركة'],
+  code:        ['code', 'Code', 'كود'],
+  name:        ['name', 'Name', 'اسم', 'اسم المنتج'],
+  price:       ['price', 'Price', 'سعر', 'سعر الجملة', 'سعر جملة'],
+  retailPrice: ['retailPrice', 'RetailPrice', 'Retail Price', 'retail_price', 'سعر القطاعي', 'سعر قطاعي'],
+  stock:       ['stock', 'Stock', 'مخزون'],
+  category:    ['category', 'Category', 'فئة'],
+  company:     ['company', 'Company', 'شركة'],
 };
 
 /**
@@ -34,6 +35,7 @@ function normalizeRow(row, rowIndex) {
     code: extractField(row, 'code'),
     name: extractField(row, 'name'),
     price: extractField(row, 'price'),
+    retailPrice: extractField(row, 'retailPrice'),
     stock: extractField(row, 'stock'),
     category: extractField(row, 'category'),
     company: extractField(row, 'company'),
@@ -47,7 +49,7 @@ function normalizeRow(row, rowIndex) {
  */
 function validateRow(normalizedRow) {
   const errors = [];
-  const { rowNumber, code, name, price, stock } = normalizedRow;
+  const { rowNumber, code, name, price, retailPrice, stock } = normalizedRow;
 
   // Required fields
   if (!code) {
@@ -62,6 +64,13 @@ function validateRow(normalizedRow) {
     errors.push({ rowNumber, field: 'price', error: `قيمة السعر غير صالحة: "${price}"`, type: 'INVALID_NUMBER' });
   } else if (price && parseFloat(price) < 0) {
     errors.push({ rowNumber, field: 'price', error: `السعر لا يمكن أن يكون سالبًا: "${price}"`, type: 'INVALID_NUMBER' });
+  }
+
+  // Retail price validation (optional field)
+  if (retailPrice && isNaN(parseFloat(retailPrice))) {
+    errors.push({ rowNumber, field: 'retailPrice', error: `قيمة سعر القطاعي غير صالحة: "${retailPrice}"`, type: 'INVALID_NUMBER' });
+  } else if (retailPrice && parseFloat(retailPrice) < 0) {
+    errors.push({ rowNumber, field: 'retailPrice', error: `سعر القطاعي لا يمكن أن يكون سالبًا: "${retailPrice}"`, type: 'INVALID_NUMBER' });
   }
 
   if (stock && isNaN(parseInt(stock))) {

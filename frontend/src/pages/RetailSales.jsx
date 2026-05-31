@@ -435,7 +435,10 @@ export default function RetailSales() {
                         </div>
                         {/* Price */}
                         <div className="text-left shrink-0">
-                          <span className="text-sm font-bold text-accent-400">{formatCurrency(product.price)}</span>
+                          <div className="flex flex-col items-end gap-1">
+                            <span className="text-sm font-bold text-green-400">قطاعي: {product.retailPrice != null ? formatCurrency(product.retailPrice) : <span className="text-gray-500 font-normal">سعر الجملة</span>}</span>
+                            <span className="text-xs text-gray-500 line-through">جملة: {formatCurrency(product.price)}</span>
+                          </div>
                         </div>
                       </button>
                     ))}
@@ -503,7 +506,8 @@ export default function RetailSales() {
                     </div>
                     <p className="text-sm text-gray-400">الكود: <span dir="ltr" className="text-brand-400">{lookupResult.code}</span></p>
                     <div className="flex items-center gap-3 mt-1">
-                      <p className="text-sm text-accent-400 font-bold">{formatCurrency(lookupResult.price)}</p>
+                      <p className="text-sm text-green-400 font-bold">قطاعي: {lookupResult.retailPrice != null ? formatCurrency(lookupResult.retailPrice) : <span className="text-gray-500 font-normal">غير محدد (يستخدم الجملة)</span>}</p>
+                      <p className="text-xs text-gray-500 line-through">جملة: {formatCurrency(lookupResult.price)}</p>
                       <span className={`text-xs px-2 py-0.5 rounded-full ${lookupResult.stock > 5 ? 'bg-green-500/15 text-green-400' : lookupResult.stock > 0 ? 'bg-yellow-500/15 text-yellow-400' : 'bg-red-500/15 text-red-400'}`}>
                         المخزون: {lookupResult.stock}
                       </span>
@@ -566,7 +570,14 @@ export default function RetailSales() {
                             <span className="text-xs text-gray-500 mr-2">({item.companyName})</span>
                           )}
                         </td>
-                        <td className="p-3 text-sm text-gray-400">{formatCurrency(item.price)}</td>
+                        <td className="p-3">
+                          <div className="flex flex-col">
+                            <span className="text-sm text-green-400 font-bold">{formatCurrency(item.price)}</span>
+                            {item.price !== item.wholesalePrice && (
+                              <span className="text-xs text-gray-500 line-through">{formatCurrency(item.wholesalePrice)}</span>
+                            )}
+                          </div>
+                        </td>
                         <td className="p-3">
                           <div className="flex items-center gap-1">
                             <button onClick={() => updateQty(item.code, item.quantity - 1)} className="w-7 h-7 rounded bg-brand-800 text-white text-sm hover:bg-brand-700 transition-colors flex items-center justify-center">−</button>
