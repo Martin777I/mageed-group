@@ -180,11 +180,13 @@ export default function RetailSales() {
     if (existing) {
       setCart(cart.map((c) => c.code === lookupResult.code ? { ...c, quantity: c.quantity + quantity } : c));
     } else {
+      const actualPrice = lookupResult.retailPrice != null ? lookupResult.retailPrice : lookupResult.price;
       setCart([...cart, {
         code: lookupResult.code,
         name: lookupResult.name,
         companyName: lookupResult.company?.name || null,
-        price: lookupResult.price,
+        price: actualPrice,
+        wholesalePrice: lookupResult.price,
         stock: lookupResult.stock,
         quantity,
       }]);
@@ -193,10 +195,13 @@ export default function RetailSales() {
     setNameQuery('');
     setQuantity(1);
     setLookupResult(null);
+    setSearchResults([]);
+    setShowDropdown(false);
+    
     if (searchMode === 'code') {
-      codeInputRef.current?.focus();
+      setTimeout(() => codeInputRef.current?.focus(), 50);
     } else {
-      nameInputRef.current?.focus();
+      setTimeout(() => nameInputRef.current?.focus(), 50);
     }
   };
 
