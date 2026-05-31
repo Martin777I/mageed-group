@@ -13,6 +13,8 @@ import CustomerDetail from './pages/CustomerDetail';
 import Orders from './pages/Orders';
 import OrderDetail from './pages/OrderDetail';
 import Returns from './pages/Returns';
+import RetailSales from './pages/RetailSales';
+import RetailReturns from './pages/RetailReturns';
 import ImportProducts from './pages/ImportProducts';
 import ImportHistory from './pages/ImportHistory';
 import PublicInvoice from './pages/PublicInvoice';
@@ -63,6 +65,8 @@ export default function App() {
             <Route path="orders" element={<Orders />} />
             <Route path="orders/:id" element={<OrderDetail />} />
             <Route path="returns" element={<Returns />} />
+            <Route path="retail" element={<RetailSales />} />
+            <Route path="retail-returns" element={<RetailReturns />} />
             <Route path="import" element={<ImportProducts />} />
             <Route path="import-history" element={<ImportHistory />} />
           </Route>

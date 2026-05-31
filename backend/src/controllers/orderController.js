@@ -134,6 +134,13 @@ exports.getStats = async (req, res) => {
       outOfStockProducts,
       monthlySales,
       monthlyReturns,
+      // Retail stats
+      totalRetailInvoices,
+      todayRetailInvoices,
+      todayRetailList,
+      monthlyRetailSales,
+      totalRetailReturnsData,
+      monthlyRetailReturns,
     ] = await Promise.all([
       prisma.product.count({ where: { isActive: true } }),
       prisma.order.count({ where: { status: 'pending' } }),
@@ -155,6 +162,29 @@ exports.getStats = async (req, res) => {
       }),
       // Monthly returns
       prisma.return.aggregate({
+        where: { createdAt: { gte: thirtyDaysAgo } },
+        _sum: { totalAmount: true },
+        _count: true,
+      }),
+      // Retail: total invoices
+      prisma.retailInvoice.count(),
+      // Retail: today invoices
+      prisma.retailInvoice.count({ where: { createdAt: { gte: today } } }),
+      // Retail: today invoice amounts
+      prisma.retailInvoice.findMany({
+        where: { createdAt: { gte: today } },
+        select: { totalAmount: true },
+      }),
+      // Retail: monthly sales
+      prisma.retailInvoice.aggregate({
+        where: { createdAt: { gte: thirtyDaysAgo } },
+        _sum: { totalAmount: true },
+        _count: true,
+      }),
+      // Retail: total returns
+      prisma.retailReturn.aggregate({ _sum: { totalAmount: true }, _count: true }),
+      // Retail: monthly returns
+      prisma.retailReturn.aggregate({
         where: { createdAt: { gte: thirtyDaysAgo } },
         _sum: { totalAmount: true },
         _count: true,
@@ -254,6 +284,8 @@ exports.getStats = async (req, res) => {
       take: 10,
     });
 
+    const todayRetailRevenue = todayRetailList.reduce((sum, i) => sum + i.totalAmount, 0);
+
     res.json({
       totalProducts,
       pendingOrders,
@@ -274,6 +306,22 @@ exports.getStats = async (req, res) => {
       monthlyReturns: {
         count: monthlyReturns._count,
         amount: monthlyReturns._sum.totalAmount || 0,
+      },
+      // Retail stats
+      retail: {
+        totalInvoices: totalRetailInvoices,
+        todayInvoices: todayRetailInvoices,
+        todayRevenue: todayRetailRevenue,
+        totalReturns: totalRetailReturnsData._count,
+        totalReturnsAmount: totalRetailReturnsData._sum.totalAmount || 0,
+        monthlySales: {
+          count: monthlyRetailSales._count,
+          amount: monthlyRetailSales._sum.totalAmount || 0,
+        },
+        monthlyReturns: {
+          count: monthlyRetailReturns._count,
+          amount: monthlyRetailReturns._sum.totalAmount || 0,
+        },
       },
       topCustomers: topCustomersResult,
       topProducts: topProductsResult,

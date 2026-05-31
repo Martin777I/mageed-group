@@ -32,6 +32,8 @@ const orderRoutes = require('./routes/orders');
 const companyRoutes = require('./routes/companies');
 const customerRoutes = require('./routes/customers');
 const returnRoutes = require('./routes/returns');
+const retailRoutes = require('./routes/retail');
+const retailReturnRoutes = require('./routes/retailReturns');
 const healthRoutes = require('./routes/health');
 const alertRoutes = require('./routes/alerts');
 
@@ -86,6 +88,8 @@ app.use('/api/orders', orderRoutes);
 app.use('/api/companies', companyRoutes);
 app.use('/api/customers', customerRoutes);
 app.use('/api/returns', returnRoutes);
+app.use('/api/retail', retailRoutes);
+app.use('/api/retail-returns', retailReturnRoutes);
 
 // ══════════════════════════════════════════════
 //  ERROR HANDLING

@@ -38,16 +38,18 @@ model Company {
 }
 
 model Customer {
-  id           Int      @id @default(autoincrement())
-  customerCode String   @unique @map("customer_code")
-  name         String
-  phone        String   @unique
-  address      String?
-  notes        String?  @db.Text
-  createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
-  orders       Order[]
-  returns      Return[]
+  id              Int              @id @default(autoincrement())
+  customerCode    String           @unique @map("customer_code")
+  name            String
+  phone           String           @unique
+  address         String?
+  notes           String?          @db.Text
+  createdAt       DateTime         @default(now()) @map("created_at")
+  updatedAt       DateTime         @updatedAt @map("updated_at")
+  orders          Order[]
+  returns         Return[]
+  retailInvoices  RetailInvoice[]
+  retailReturns   RetailReturn[]
 
   @@index([phone])
   @@index([customerCode])
@@ -56,19 +58,21 @@ model Customer {
 }
 
 model Product {
-  id          Int          @id @default(autoincrement())
-  code        String       @unique
-  name        String
-  price       Float
-  category    String?
-  stock       Int          @default(0)
-  companyId   Int?         @map("company_id")
-  company     Company?     @relation(fields: [companyId], references: [id])
-  isActive    Boolean      @default(true) @map("is_active")
-  createdAt   DateTime     @default(now()) @map("created_at")
-  updatedAt   DateTime     @updatedAt @map("updated_at")
-  orderItems  OrderItem[]
-  returnItems ReturnItem[]
+  id                  Int                 @id @default(autoincrement())
+  code                String              @unique
+  name                String
+  price               Float
+  category            String?
+  stock               Int                 @default(0)
+  companyId           Int?                @map("company_id")
+  company             Company?            @relation(fields: [companyId], references: [id])
+  isActive            Boolean             @default(true) @map("is_active")
+  createdAt           DateTime            @default(now()) @map("created_at")
+  updatedAt           DateTime            @updatedAt @map("updated_at")
+  orderItems          OrderItem[]
+  returnItems         ReturnItem[]
+  retailInvoiceItems  RetailInvoiceItem[]
+  retailReturnItems   RetailReturnItem[]
 
   @@index([companyId])
   @@index([code])
@@ -154,6 +158,84 @@ model ReturnItem {
   @@index([returnId])
   @@index([productId])
   @@map("return_items")
+}
+
+// ══════════════════════════════════════════════
+//  RETAIL (القطاعي) MODELS
+// ══════════════════════════════════════════════
+
+model RetailInvoice {
+  id            Int                 @id @default(autoincrement())
+  invoiceNumber String              @unique @map("invoice_number")
+  customerId    Int?                @map("customer_id")
+  customer      Customer?           @relation(fields: [customerId], references: [id])
+  customerName  String?             @map("customer_name")
+  customerPhone String?             @map("customer_phone")
+  totalAmount   Float               @default(0) @map("total_amount")
+  notes         String?             @db.Text
+  adminId       Int?                @map("admin_id")
+  items         RetailInvoiceItem[]
+  returns       RetailReturn[]
+  createdAt     DateTime            @default(now()) @map("created_at")
+  updatedAt     DateTime            @updatedAt @map("updated_at")
+
+  @@index([customerId])
+  @@index([createdAt])
+  @@index([invoiceNumber])
+  @@map("retail_invoices")
+}
+
+model RetailInvoiceItem {
+  id          Int           @id @default(autoincrement())
+  invoiceId   Int           @map("invoice_id")
+  invoice     RetailInvoice @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  productId   Int           @map("product_id")
+  product     Product       @relation(fields: [productId], references: [id])
+  productCode String        @map("product_code")
+  productName String        @map("product_name")
+  price       Float
+  quantity    Int
+  total       Float
+  createdAt   DateTime      @default(now()) @map("created_at")
+
+  @@index([invoiceId])
+  @@index([productId])
+  @@index([invoiceId, productId])
+  @@map("retail_invoice_items")
+}
+
+model RetailReturn {
+  id           Int                @id @default(autoincrement())
+  returnNumber String             @unique @map("return_number")
+  invoiceId    Int                @map("invoice_id")
+  invoice      RetailInvoice      @relation(fields: [invoiceId], references: [id])
+  customerId   Int?               @map("customer_id")
+  customer     Customer?          @relation(fields: [customerId], references: [id])
+  totalAmount  Float              @default(0) @map("total_amount")
+  notes        String?            @db.Text
+  items        RetailReturnItem[]
+  createdAt    DateTime           @default(now()) @map("created_at")
+
+  @@index([invoiceId])
+  @@index([customerId])
+  @@index([createdAt])
+  @@map("retail_returns")
+}
+
+model RetailReturnItem {
+  id        Int          @id @default(autoincrement())
+  returnId  Int          @map("return_id")
+  return    RetailReturn @relation(fields: [returnId], references: [id], onDelete: Cascade)
+  productId Int          @map("product_id")
+  product   Product      @relation(fields: [productId], references: [id])
+  quantity  Int
+  price     Float
+  total     Float
+  createdAt DateTime     @default(now()) @map("created_at")
+
+  @@index([returnId])
+  @@index([productId])
+  @@map("retail_return_items")
 }
 
 model ImportLog {
