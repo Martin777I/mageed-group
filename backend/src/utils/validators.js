@@ -4,12 +4,12 @@
  */
 
 const COLUMN_MAP = {
-  code:     ['code', 'Code', 'كود'],
-  name:     ['name', 'Name', 'اسم', 'اسم المنتج'],
-  price:    ['price', 'Price', 'سعر'],
-  stock:    ['stock', 'Stock', 'مخزون'],
+  code: ['code', 'Code', 'كود'],
+  name: ['name', 'Name', 'اسم', 'اسم المنتج'],
+  price: ['price', 'Price', 'سعر'],
+  stock: ['stock', 'Stock', 'مخزون'],
   category: ['category', 'Category', 'فئة'],
-  company:  ['company', 'Company', 'شركة'],
+  company: ['company', 'Company', 'شركة'],
 };
 
 /**

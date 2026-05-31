@@ -285,9 +285,8 @@ export default function RetailSales() {
           <button
             key={t.key}
             onClick={() => { setTab(t.key); if (t.key === 'create') resetCreate(); }}
-            className={`px-5 py-2.5 text-sm font-medium transition-all border-b-2 ${
-              tab === t.key ? 'border-brand-500 text-brand-400' : 'border-transparent text-gray-500 hover:text-gray-300'
-            }`}
+            className={`px-5 py-2.5 text-sm font-medium transition-all border-b-2 ${tab === t.key ? 'border-brand-500 text-brand-400' : 'border-transparent text-gray-500 hover:text-gray-300'
+              }`}
           >
             {t.label}
           </button>
@@ -342,21 +341,19 @@ export default function RetailSales() {
               <div className="flex items-center gap-1 bg-brand-900/60 rounded-xl p-1">
                 <button
                   onClick={() => { setSearchMode('name'); setLookupResult(null); setProductCode(''); }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    searchMode === 'name'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${searchMode === 'name'
                       ? 'bg-brand-600 text-white shadow-md'
                       : 'text-gray-400 hover:text-gray-300'
-                  }`}
+                    }`}
                 >
                   🔍 بحث بالاسم
                 </button>
                 <button
                   onClick={() => { setSearchMode('code'); setLookupResult(null); setNameQuery(''); setSearchResults([]); setShowDropdown(false); }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                    searchMode === 'code'
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${searchMode === 'code'
                       ? 'bg-brand-600 text-white shadow-md'
                       : 'text-gray-400 hover:text-gray-300'
-                  }`}
+                    }`}
                 >
                   # بحث بالكود
                 </button>
@@ -404,11 +401,10 @@ export default function RetailSales() {
                         key={product.id}
                         onClick={() => selectSearchResult(product)}
                         onMouseEnter={() => setHighlightedIndex(index)}
-                        className={`w-full flex items-center gap-3 px-4 py-3 transition-all text-right border-b border-brand-800/20 last:border-b-0 ${
-                          highlightedIndex === index
+                        className={`w-full flex items-center gap-3 px-4 py-3 transition-all text-right border-b border-brand-800/20 last:border-b-0 ${highlightedIndex === index
                             ? 'bg-brand-700/40'
                             : 'hover:bg-brand-800/40'
-                        }`}
+                          }`}
                       >
                         {/* Product Info */}
                         <div className="flex-1 min-w-0">
@@ -429,11 +425,10 @@ export default function RetailSales() {
                                 {product.company.name}
                               </span>
                             )}
-                            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
-                              product.stock > 5 ? 'bg-green-500/15 text-green-400' :
-                              product.stock > 0 ? 'bg-yellow-500/15 text-yellow-400' :
-                              'bg-red-500/15 text-red-400'
-                            }`}>
+                            <span className={`text-xs px-1.5 py-0.5 rounded-full ${product.stock > 5 ? 'bg-green-500/15 text-green-400' :
+                                product.stock > 0 ? 'bg-yellow-500/15 text-yellow-400' :
+                                  'bg-red-500/15 text-red-400'
+                              }`}>
                               المخزون: {product.stock}
                             </span>
                           </div>

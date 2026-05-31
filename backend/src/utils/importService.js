@@ -360,11 +360,11 @@ async function getImportHistory({ page = 1, limit = 20, search = '' }) {
   const skip = (parseInt(page) - 1) * parseInt(limit);
   const where = search
     ? {
-        OR: [
-          { fileName: { contains: search } },
-          { mode: { contains: search } },
-        ],
-      }
+      OR: [
+        { fileName: { contains: search } },
+        { mode: { contains: search } },
+      ],
+    }
     : {};
 
   const [logs, total] = await Promise.all([
