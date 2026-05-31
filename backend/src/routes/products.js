@@ -5,6 +5,7 @@ const upload = require('../middleware/upload');
 const {
   getAllProducts,
   getProductByCode,
+  searchProducts,
   createProduct,
   updateProduct,
   deleteProduct,
@@ -15,6 +16,9 @@ const {
 
 // Public - customer lookup by code
 router.get('/code/:code', getProductByCode);
+
+// Public - live search by name/code (autocomplete)
+router.get('/search', searchProducts);
 
 // Admin routes
 router.get('/', auth, getAllProducts);

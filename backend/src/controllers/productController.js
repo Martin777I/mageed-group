@@ -67,6 +67,42 @@ exports.getProductByCode = async (req, res) => {
   }
 };
 
+// GET /api/products/search?q=... — live autocomplete search by name/code
+exports.searchProducts = async (req, res) => {
+  try {
+    const { q = '' } = req.query;
+    const query = q.trim();
+    if (!query || query.length < 1) {
+      return res.json([]);
+    }
+
+    const products = await prisma.product.findMany({
+      where: {
+        isActive: true,
+        OR: [
+          { name: { contains: query } },
+          { code: { contains: query } },
+        ],
+      },
+      select: {
+        id: true,
+        code: true,
+        name: true,
+        price: true,
+        stock: true,
+        company: { select: { id: true, name: true, color: true } },
+      },
+      take: 15,
+      orderBy: { name: 'asc' },
+    });
+
+    res.json(products);
+  } catch (error) {
+    logger.error('SearchProducts error:', error);
+    res.status(500).json({ message: 'خطأ في البحث عن المنتجات' });
+  }
+};
+
 exports.createProduct = async (req, res) => {
   try {
     const { code, name, price, category, stock, companyId } = req.body;

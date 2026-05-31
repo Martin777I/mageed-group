@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import api from '../api/axios';
 import toast from 'react-hot-toast';
 import LoadingSpinner from '../components/LoadingSpinner';
@@ -7,6 +7,8 @@ import { formatCurrency, formatDate } from '../utils/helpers';
 export default function RetailSales() {
   const [tab, setTab] = useState('create'); // create | history
   const codeInputRef = useRef(null);
+  const nameInputRef = useRef(null);
+  const dropdownRef = useRef(null);
 
   // ─── Create Invoice State ───
   const [customerName, setCustomerName] = useState('');
@@ -19,6 +21,15 @@ export default function RetailSales() {
   const [notes, setNotes] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [resultInvoice, setResultInvoice] = useState(null);
+
+  // ─── Smart Search State ───
+  const [searchMode, setSearchMode] = useState('name'); // 'name' | 'code'
+  const [nameQuery, setNameQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searchLoading, setSearchLoading] = useState(false);
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [highlightedIndex, setHighlightedIndex] = useState(-1);
+  const searchTimerRef = useRef(null);
 
   // ─── History State ───
   const [invoices, setInvoices] = useState([]);
@@ -57,7 +68,89 @@ export default function RetailSales() {
 
   useEffect(() => { if (tab === 'history') fetchInvoices(); }, [tab, search, page]);
 
-  // ─── Product Lookup ───
+  // ─── Close dropdown when clicking outside ───
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setShowDropdown(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  // ─── Debounced Name Search ───
+  const performSearch = useCallback(async (query) => {
+    if (!query || query.trim().length < 1) {
+      setSearchResults([]);
+      setShowDropdown(false);
+      return;
+    }
+    setSearchLoading(true);
+    try {
+      const res = await api.get(`/products/search?q=${encodeURIComponent(query.trim())}`);
+      setSearchResults(res.data);
+      setShowDropdown(res.data.length > 0);
+      setHighlightedIndex(-1);
+    } catch {
+      setSearchResults([]);
+      setShowDropdown(false);
+    } finally {
+      setSearchLoading(false);
+    }
+  }, []);
+
+  const handleNameQueryChange = (value) => {
+    setNameQuery(value);
+    setLookupResult(null);
+    // Debounce
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    if (value.trim().length >= 1) {
+      setSearchLoading(true);
+      searchTimerRef.current = setTimeout(() => {
+        performSearch(value);
+      }, 300);
+    } else {
+      setSearchResults([]);
+      setShowDropdown(false);
+      setSearchLoading(false);
+    }
+  };
+
+  // Cleanup timer on unmount
+  useEffect(() => {
+    return () => {
+      if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    };
+  }, []);
+
+  const selectSearchResult = (product) => {
+    setLookupResult(product);
+    setNameQuery('');
+    setSearchResults([]);
+    setShowDropdown(false);
+    setHighlightedIndex(-1);
+  };
+
+  const handleSearchKeyDown = (e) => {
+    if (!showDropdown || searchResults.length === 0) return;
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev < searchResults.length - 1 ? prev + 1 : 0));
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : searchResults.length - 1));
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      if (highlightedIndex >= 0 && highlightedIndex < searchResults.length) {
+        selectSearchResult(searchResults[highlightedIndex]);
+      }
+    } else if (e.key === 'Escape') {
+      setShowDropdown(false);
+    }
+  };
+
+  // ─── Product Lookup by Code ───
   const lookupProduct = async () => {
     const code = productCode.trim();
     if (!code) return;
@@ -90,15 +183,21 @@ export default function RetailSales() {
       setCart([...cart, {
         code: lookupResult.code,
         name: lookupResult.name,
+        companyName: lookupResult.company?.name || null,
         price: lookupResult.price,
         stock: lookupResult.stock,
         quantity,
       }]);
     }
     setProductCode('');
+    setNameQuery('');
     setQuantity(1);
     setLookupResult(null);
-    codeInputRef.current?.focus();
+    if (searchMode === 'code') {
+      codeInputRef.current?.focus();
+    } else {
+      nameInputRef.current?.focus();
+    }
   };
 
   const removeFromCart = (code) => setCart(cart.filter((c) => c.code !== code));
@@ -135,11 +234,14 @@ export default function RetailSales() {
     setCustomerName('');
     setCustomerPhone('');
     setProductCode('');
+    setNameQuery('');
     setQuantity(1);
     setCart([]);
     setLookupResult(null);
     setNotes('');
     setResultInvoice(null);
+    setSearchResults([]);
+    setShowDropdown(false);
   };
 
   return (
@@ -231,43 +333,179 @@ export default function RetailSales() {
 
           {/* Product Entry */}
           <div className="glass rounded-2xl p-5">
-            <h3 className="text-base font-bold text-white mb-4 flex items-center gap-2">
-              <svg className="w-5 h-5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
-              إضافة منتج
-            </h3>
-            <div className="flex flex-col sm:flex-row gap-3">
-              <div className="flex-1">
-                <input
-                  ref={codeInputRef}
-                  type="text"
-                  value={productCode}
-                  onChange={(e) => { setProductCode(e.target.value); setLookupResult(null); }}
-                  onKeyDown={handleCodeKeyDown}
-                  placeholder="أدخل كود المنتج"
-                  className="w-full px-4 py-2.5 rounded-xl bg-brand-900/80 border border-brand-800/50 text-white placeholder-gray-500 text-sm focus:border-brand-500 transition-all"
-                  dir="ltr"
-                />
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-base font-bold text-white flex items-center gap-2">
+                <svg className="w-5 h-5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" /></svg>
+                إضافة منتج
+              </h3>
+              {/* Search Mode Toggle */}
+              <div className="flex items-center gap-1 bg-brand-900/60 rounded-xl p-1">
+                <button
+                  onClick={() => { setSearchMode('name'); setLookupResult(null); setProductCode(''); }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    searchMode === 'name'
+                      ? 'bg-brand-600 text-white shadow-md'
+                      : 'text-gray-400 hover:text-gray-300'
+                  }`}
+                >
+                  🔍 بحث بالاسم
+                </button>
+                <button
+                  onClick={() => { setSearchMode('code'); setLookupResult(null); setNameQuery(''); setSearchResults([]); setShowDropdown(false); }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                    searchMode === 'code'
+                      ? 'bg-brand-600 text-white shadow-md'
+                      : 'text-gray-400 hover:text-gray-300'
+                  }`}
+                >
+                  # بحث بالكود
+                </button>
               </div>
-              <button
-                onClick={lookupProduct}
-                disabled={lookupLoading || !productCode.trim()}
-                className="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-medium transition-all disabled:opacity-50"
-              >
-                {lookupLoading ? (
-                  <span className="flex items-center gap-2">
-                    <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                    بحث...
-                  </span>
-                ) : 'بحث'}
-              </button>
             </div>
+
+            {/* ─── Search by Name Mode ─── */}
+            {searchMode === 'name' && (
+              <div className="relative" ref={dropdownRef}>
+                <div className="relative">
+                  <input
+                    ref={nameInputRef}
+                    type="text"
+                    value={nameQuery}
+                    onChange={(e) => handleNameQueryChange(e.target.value)}
+                    onKeyDown={handleSearchKeyDown}
+                    onFocus={() => { if (searchResults.length > 0) setShowDropdown(true); }}
+                    placeholder="ابحث باسم المنتج أو الكود..."
+                    className="w-full px-4 py-3 rounded-xl bg-brand-900/80 border border-brand-800/50 text-white placeholder-gray-500 text-sm focus:border-brand-500 transition-all pr-12"
+                    autoComplete="off"
+                  />
+                  {/* Search icon / spinner */}
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                    {searchLoading ? (
+                      <span className="w-5 h-5 border-2 border-brand-400 border-t-transparent rounded-full animate-spin block" />
+                    ) : (
+                      <svg className="w-5 h-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                      </svg>
+                    )}
+                  </div>
+                </div>
+
+                {/* ─── Autocomplete Dropdown ─── */}
+                {showDropdown && searchResults.length > 0 && (
+                  <div className="absolute z-50 w-full mt-2 rounded-xl bg-brand-900/95 backdrop-blur-xl border border-brand-700/50 shadow-2xl shadow-black/40 overflow-hidden animate-fade-in" style={{ maxHeight: '350px', overflowY: 'auto' }}>
+                    <div className="px-3 py-2 border-b border-brand-800/40">
+                      <span className="text-xs text-gray-500">
+                        {searchResults.length} نتيجة
+                        {searchResults.length >= 15 && ' (أول 15)'}
+                      </span>
+                    </div>
+                    {searchResults.map((product, index) => (
+                      <button
+                        key={product.id}
+                        onClick={() => selectSearchResult(product)}
+                        onMouseEnter={() => setHighlightedIndex(index)}
+                        className={`w-full flex items-center gap-3 px-4 py-3 transition-all text-right border-b border-brand-800/20 last:border-b-0 ${
+                          highlightedIndex === index
+                            ? 'bg-brand-700/40'
+                            : 'hover:bg-brand-800/40'
+                        }`}
+                      >
+                        {/* Product Info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-0.5">
+                            <span className="text-sm font-medium text-white truncate">{product.name}</span>
+                            <span className="text-xs text-gray-500 font-mono shrink-0" dir="ltr">{product.code}</span>
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {product.company && (
+                              <span
+                                className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full shrink-0"
+                                style={{
+                                  backgroundColor: `${product.company.color}20`,
+                                  color: product.company.color,
+                                  border: `1px solid ${product.company.color}30`,
+                                }}
+                              >
+                                {product.company.name}
+                              </span>
+                            )}
+                            <span className={`text-xs px-1.5 py-0.5 rounded-full ${
+                              product.stock > 5 ? 'bg-green-500/15 text-green-400' :
+                              product.stock > 0 ? 'bg-yellow-500/15 text-yellow-400' :
+                              'bg-red-500/15 text-red-400'
+                            }`}>
+                              المخزون: {product.stock}
+                            </span>
+                          </div>
+                        </div>
+                        {/* Price */}
+                        <div className="text-left shrink-0">
+                          <span className="text-sm font-bold text-accent-400">{formatCurrency(product.price)}</span>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+
+                {/* No results message */}
+                {showDropdown === false && nameQuery.trim().length >= 1 && !searchLoading && searchResults.length === 0 && (
+                  <div className="absolute z-50 w-full mt-2 rounded-xl bg-brand-900/95 backdrop-blur-xl border border-brand-700/50 shadow-2xl shadow-black/40 p-4 text-center animate-fade-in">
+                    <p className="text-sm text-gray-400">لا توجد نتائج لـ "{nameQuery}"</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* ─── Search by Code Mode ─── */}
+            {searchMode === 'code' && (
+              <div className="flex flex-col sm:flex-row gap-3">
+                <div className="flex-1">
+                  <input
+                    ref={codeInputRef}
+                    type="text"
+                    value={productCode}
+                    onChange={(e) => { setProductCode(e.target.value); setLookupResult(null); }}
+                    onKeyDown={handleCodeKeyDown}
+                    placeholder="أدخل كود المنتج"
+                    className="w-full px-4 py-2.5 rounded-xl bg-brand-900/80 border border-brand-800/50 text-white placeholder-gray-500 text-sm focus:border-brand-500 transition-all"
+                    dir="ltr"
+                  />
+                </div>
+                <button
+                  onClick={lookupProduct}
+                  disabled={lookupLoading || !productCode.trim()}
+                  className="px-5 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-500 text-white text-sm font-medium transition-all disabled:opacity-50"
+                >
+                  {lookupLoading ? (
+                    <span className="flex items-center gap-2">
+                      <span className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                      بحث...
+                    </span>
+                  ) : 'بحث'}
+                </button>
+              </div>
+            )}
 
             {/* Lookup Result */}
             {lookupResult && (
               <div className="mt-4 p-4 rounded-xl bg-green-500/10 border border-green-500/20 animate-fade-in">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                   <div>
-                    <p className="text-white font-medium">{lookupResult.name}</p>
+                    <div className="flex items-center gap-2 mb-1">
+                      <p className="text-white font-medium">{lookupResult.name}</p>
+                      {lookupResult.company && (
+                        <span
+                          className="inline-flex items-center text-xs px-2 py-0.5 rounded-full"
+                          style={{
+                            backgroundColor: `${lookupResult.company.color}20`,
+                            color: lookupResult.company.color,
+                            border: `1px solid ${lookupResult.company.color}30`,
+                          }}
+                        >
+                          {lookupResult.company.name}
+                        </span>
+                      )}
+                    </div>
                     <p className="text-sm text-gray-400">الكود: <span dir="ltr" className="text-brand-400">{lookupResult.code}</span></p>
                     <div className="flex items-center gap-3 mt-1">
                       <p className="text-sm text-accent-400 font-bold">{formatCurrency(lookupResult.price)}</p>
@@ -327,7 +565,12 @@ export default function RetailSales() {
                     {cart.map((item) => (
                       <tr key={item.code} className="border-b border-brand-800/20">
                         <td className="p-3 text-sm text-brand-400 font-mono" dir="ltr">{item.code}</td>
-                        <td className="p-3 text-sm text-white">{item.name}</td>
+                        <td className="p-3 text-sm">
+                          <span className="text-white">{item.name}</span>
+                          {item.companyName && (
+                            <span className="text-xs text-gray-500 mr-2">({item.companyName})</span>
+                          )}
+                        </td>
                         <td className="p-3 text-sm text-gray-400">{formatCurrency(item.price)}</td>
                         <td className="p-3">
                           <div className="flex items-center gap-1">
